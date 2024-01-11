@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-int error_checking_arg(int argc, char *argv[]) {
+int error_checking_arg(int argc, char *argv[]) { // Checks if the basis vectors inputted in the terminal is correct 
     int no_of_elements = 0, no_of_vectors = 0; 
 
     for (int i = 1; i < argc; i++) {

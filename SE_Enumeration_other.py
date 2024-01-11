@@ -55,28 +55,22 @@ def vector_addition(vector1, vector2):
 
     return result
 
-
-def mu_index_swap(list_of_coeff, i, j):
-    for mu_swap in list_of_coeff:
-        if mu_swap[0] == [j, i]:
-            return mu_swap
-
-
-def sum_of_mu(list_of_coeff, x):
+def sum_of_coeff(lower, upper):
     result = 0
 
-    for mu in list_of_coeff:
-        i = mu[0][0]
-        j = mu[0][1]
 
-        if j > i:
-            mu_swapped = mu_index_swap(list_of_coeff, i, j)
-            result = x[j-1] * mu_swapped
+    while lower <= upper:
+        if result == 0:
+            result = scalar_vector_multiplication(v[lower-1], lattice_basis[lower-1])
+        else:
+            x = scalar_vector_multiplication(v[lower-1], lattice_basis[lower-1])
+            result = vector_addition(result, x)
+        
+        lower += 1
 
     return result
 
-
-def sum_of_coeff(lower, upper):
+def sum_of_mu(lower, upper):
     result = 0
     mu = 1
 
@@ -90,7 +84,6 @@ def sum_of_coeff(lower, upper):
         lower += 1
 
     return result
-
 
 # Gram-Schmidt bit
 for i in range(0, len(lattice_basis)):
@@ -122,10 +115,9 @@ for i in range(0, len(lattice_basis)):
 #basis_norms_squared.append(norm)
 
 print(list_of_vectors_v)
-v_list = []
 print(list_of_coeff)
 print(basis_norms_squared)
-
+v_list = []
 for i in range(0, len(list_of_vectors_v)):
     result = dot_product(list_of_vectors_v[i], list_of_vectors_v[i])
     v_list.append(result)
@@ -134,59 +126,38 @@ print(v_list)
 
 
 
-# SLP Enumeration
-# x = [0 for i in range(0, len(lattice_basis))]
-# l = 0
-# s = []
-# i = 1
-
-
-# while i <= len(lattice_basis):
-#     temp = x[i-1] + sum_of_mu(list_of_coeff, x)
-#     l = (temp * temp) * basis_norms_squared[i-1]
-#
-#     if i == 1 and sum_of_ints(l, 1, len(lattice_basis)) <= A:
-#         s.append(sum_of_ints(, 1, len(lattice_basis)))
-
-# SE Enumeration
 v = [1.0 if i == 0.0 else 0.0 for i in range(len(lattice_basis))]
-l = [0.0 for i in range(len(lattice_basis))]
+p = [0.0 for i in range(len(lattice_basis) + 1)]
 c = [0.0 for i in range(len(lattice_basis))]
-Delta = [0.0 for i in range(len(lattice_basis))]
-delta = [0.0 for i in range(len(lattice_basis))]
-u = [0.0 for i in range(len(lattice_basis))]
-s = 1.0
-v_min = [1.0 if i == 0.0 else 0.0 for i in range(len(lattice_basis))]
-
-k = 1
-n = list_of_coeff[-1][0][0]
-while k < 3:
-    first_part = (v[k-1] + c[k-1])**2
-
-    l[k-1] = l[k] + (first_part * (v_list[k-1]**2))
-    if l[k-1] < A:
-        if k > 1:
-            k -= 1
-            c[k-1] = sum_of_coeff(k+1, 3)
-            if float(math.ceil(c[k-1])) == 0:
-                v[k-1], u[k-1] = (float(math.ceil(c[k-1]))), (float(math.ceil(c[k-1])))
-            else:
-                v[k-1], u[k-1] = -(float(math.ceil(c[k-1]))), -(float(math.ceil(c[k-1])))
-            Delta[k-1] = 0.0
-
-            if v[k-1] > -c[k-1]:
-                delta[k-1] = -1.0
-            else:
-                delta[k-1] = 1.0
+w = [0.0 for i in range(len(lattice_basis))]
+k = 1 
+last_nonzero = 1
+R = A**2
+while True:
+    print((v[k-1] - c[k-1])**2)
+    p[k-1] = p[k] + ((v[k-1] - c[k-1])**2 * v_list[k-1])
+    
+    if p[k-1] < R:
+        if k == 1:
+            R = p[k-1]
+            s = sum_of_coeff(1,len(lattice_basis))
         else:
-            A = l[k-1]
-            v_min = v[k-1]
+            k -= 1
+            c[k-1] = -(sum_of_mu(k+1, len(lattice_basis)))
+            v[k-1] = round(c[k-1])# nearest integer
+            w[k-1] = 1
     else:
         k += 1
-        s = max(s, k)
-        if k < s:
-            Delta[k-1] = -Delta[k-1]
-        if Delta[k-1] * delta[k-1] >= 0:
-            v[k-1] = u[k-1] + delta[k-1]
+        if k == len(lattice_basis) + 1:
+            print(s)
+            break
+        if k >= last_nonzero:
+            last_nonzero = k
+            v[k-1] = v[k-1] + 1
+        else:
+            if v[k-1] > c[k-1]:
+                v[k-1] = v[k-1] - w[k-1]
+            else:
+                v[k-1] = v[k-1] + w[k-1]
+            w[k-1] = w[k-1] + 1
 
-print(v_min)
