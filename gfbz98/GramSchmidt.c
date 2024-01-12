@@ -16,7 +16,7 @@ float dot_product(float vector_1[], float vector_2[], int array_size) { // Calcu
 }
 
 float * vector_addition(float vector_1[], float vector_2[], int array_size) { // Performs vector addition of 2 given vectors
-    float *result = malloc(sizeof(array_size));
+    float *result = malloc(array_size * sizeof(float));
     if (result == NULL) exit(1);
     // float result[array_size];
 
@@ -29,7 +29,7 @@ float * vector_addition(float vector_1[], float vector_2[], int array_size) { //
 }
 
 float * vector_subtraction(float vector_1[], float vector_2[], int array_size) { // Performs vector subtraction of 2 given vectors
-    float *result = malloc(sizeof(array_size));
+    float *result = malloc(array_size * sizeof(float));
     if (result == NULL) exit(1);
 
     for (int i = 0; i < array_size; i++) {
@@ -41,12 +41,11 @@ float * vector_subtraction(float vector_1[], float vector_2[], int array_size) {
 }
 
 float * scalar_vector_multiplication(float scalar, float vector[], int array_size) { // Performs multiplication of a scalar and vector
-    float *result = malloc(sizeof(array_size));
+    float *result = malloc(array_size * sizeof(float));
     if (result == NULL) exit(1);
-    // float result[array_size];
 
     for (int i = 0; i < array_size; i++) {
-        float value = scalar * (float)vector[i];
+        float value = scalar * vector[i];
         result[i] = value;
     }
 

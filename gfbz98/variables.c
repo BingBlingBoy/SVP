@@ -31,7 +31,8 @@ float ** lattice_basis(int argc, char *argv[])  {
     for (int i=0; i < argc; ++i) {
         matrix_basis[i] = values + i*argc;
     }
-
+    
+    // Storing the basis in a 2D array
     for (int i = 1; i < argc; i++) {
         if (strchr(argv[i], ']') != NULL) {
             remove_all_chars(argv[i], ']');
@@ -50,3 +51,5 @@ float ** lattice_basis(int argc, char *argv[])  {
 
     return matrix_basis; 
 }
+
+

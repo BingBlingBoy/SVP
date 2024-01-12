@@ -85,44 +85,68 @@ def sum_of_mu(lower, upper):
 
     return result
 
+
+
+
 # Gram-Schmidt bit
-for i in range(0, len(lattice_basis)):
-    if i == 0:
-        v = lattice_basis[i]
+def gram_schmidt(lattice_basis):
+    for i in range(0, len(lattice_basis)):
+        if i == 0:
+            v = lattice_basis[i]
+            list_of_vectors_v.append(v)
+            continue
+
+        u = lattice_basis[i]
+        overall_proj = 0
+        for j in range(0, len(list_of_vectors_v)):
+            mu = mu_calculation(list_of_vectors_v[j], u, i)
+
+            list_of_coeff.append(([i+1, j+1], mu))
+
+            proj_u = scalar_vector_multiplication(mu, list_of_vectors_v[j])
+
+            if overall_proj == 0:
+                overall_proj = proj_u
+            else:
+                overall_proj = vector_addition(overall_proj, proj_u)
+
+        v = vector_subtraction(u, overall_proj)
+
         list_of_vectors_v.append(v)
-        continue
-
-    u = lattice_basis[i]
-    overall_proj = 0
-    for j in range(0, len(list_of_vectors_v)):
-        mu = mu_calculation(list_of_vectors_v[j], u, i)
-
-        list_of_coeff.append(([i+1, j+1], mu))
-
-        proj_u = scalar_vector_multiplication(mu, list_of_vectors_v[j])
-
-        if overall_proj == 0:
-            overall_proj = proj_u
-        else:
-            overall_proj = vector_addition(overall_proj, proj_u)
-
-    v = vector_subtraction(u, overall_proj)
-
-    list_of_vectors_v.append(v)
 
 
-#norm = dot_product(lattice_basis[-1], lattice_basis[-1])
-#basis_norms_squared.append(norm)
+    #norm = dot_product(lattice_basis[-1], lattice_basis[-1])
+    #basis_norms_squared.append(norm)
 
-print(list_of_vectors_v)
-print(list_of_coeff)
-print(basis_norms_squared)
-v_list = []
-for i in range(0, len(list_of_vectors_v)):
-    result = dot_product(list_of_vectors_v[i], list_of_vectors_v[i])
-    v_list.append(result)
+    print(list_of_vectors_v)
+    print(list_of_coeff)
+    print(basis_norms_squared)
+    v_list = []
+    for i in range(0, len(list_of_vectors_v)):
+        result = dot_product(list_of_vectors_v[i], list_of_vectors_v[i])
+        v_list.append(result)
 
-print(v_list)
+    print(v_list)
+
+gram_schmidt(lattice_basis)
+
+# LLL
+delta = 0.75
+k = 2
+while k <= len(lattice_basis):
+    for j in range(k-1, 1, -1):
+        x = 0
+        for i in list_of_coeff:
+            if i[0] == [k, j]:
+                x = i[1]
+                break
+        if abs(x) > 0.5:
+            lattice_basis[k-1] = lattice_basis[k-1] - scalar_vector_multiplication(round(x), lattice_basis[j-1])
+            gram_schmidt(lattice_basis)
+
+
+
+
 
 
 

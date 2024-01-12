@@ -9,11 +9,9 @@
 extern int size;
 
 float * sum_of_coeff(float **lattice_basis, float v[], int lower, int upper) { // Performs the sum of the multiplication of scalar value of v and basis vector
-    
-    
     int array_size = size;
-    float *result = malloc(sizeof(array_size));
-    float *x = malloc(sizeof(array_size));
+    float *result;
+    float *x;
 
     while (lower <= upper) {
         if (lower == 1) {
@@ -22,10 +20,11 @@ float * sum_of_coeff(float **lattice_basis, float v[], int lower, int upper) { /
         else {
             x = scalar_vector_multiplication(v[lower-1], lattice_basis[lower-1], array_size);
             result = vector_addition(result, x, array_size);
+            free(x);
         }
         lower += 1;
     }
-
+    
     return result; 
 }
 
@@ -40,6 +39,7 @@ float sum_of_mu(float (*list_of_coeff)[size], float v[], int lower, int upper) {
 }
 
 float * SE_enumeration(float **matrix_basis, float (*p_list_of_coeff)[size], float v_list[]) {
+    
     int array_size = size;
     int A = 10;
 
@@ -58,7 +58,7 @@ float * SE_enumeration(float **matrix_basis, float (*p_list_of_coeff)[size], flo
     memset(c, 0.0, sizeof(c));
     float w[array_size];
     memset(w, 0.0, sizeof(w));
-    float *s = malloc(sizeof(array_size));
+    float *s;
 
     int k = 1;
     int last_nonzero = 1;
