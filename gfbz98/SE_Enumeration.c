@@ -1,6 +1,7 @@
 #include "SE_Enumeration.h"
 #include "variables.h"
 #include "GramSchmidt.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -52,8 +53,9 @@ float * SE_enumeration(float **matrix_basis, float (*p_list_of_coeff)[size], flo
             v[i] = 0.0;
         }
     }
-    float p[array_size];
+    float p[array_size + 1];
     memset(p, 0.0, sizeof(p));
+
     float c[array_size];
     memset(c, 0.0, sizeof(c));
     float w[array_size];
@@ -61,13 +63,13 @@ float * SE_enumeration(float **matrix_basis, float (*p_list_of_coeff)[size], flo
     float *s;
 
     int k = 1;
+    float first_calc = 0.0;
     int last_nonzero = 1;
     float R = pow(A, 2);
 
     while (true) {
         float first_calc = pow(v[k-1] - c[k-1], 2);
         p[k-1] = p[k] + (first_calc * v_list[k-1]);
-
         if (p[k-1] < R) {
             if (k == 1) {
                 R = p[k-1];

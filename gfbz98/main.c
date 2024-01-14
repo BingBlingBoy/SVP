@@ -7,6 +7,7 @@
 #include "variables.h"
 #include "ErrorChecking.h"
 #include "result_to_file.h"
+#include "LLL.h"
 
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -22,17 +23,27 @@ int main(int argc, char** argv) {
     matrix_basis = lattice_basis(argc, argv);
     
     int array_size = dim;
+    // for (int a = 0; a < array_size; a++) {
+    //     for (int b = 0; b < array_size; b++) {
+    //         printf("Matrix Basis: %.2f\n", matrix_basis[a][b]);
+    //     }
+    // }
     global_array_size(array_size); 
+    
+    // if (dim > 4) {
+    //     LLL(matrix_basis);
+    // }
+        
 
     float *p_list_of_vectors_v[array_size];
     for (int i = 0; i < array_size; i++) { // Storing an array of arrays
-        p_list_of_vectors_v[i] = malloc(sizeof(array_size));
+        p_list_of_vectors_v[i] = (float*)malloc(array_size * sizeof(float));
         free(p_list_of_vectors_v[i]);
     }
     float (*p_list_of_coeff)[array_size] = calloc(array_size, sizeof *p_list_of_coeff); // From https://www.geeksforgeeks.org/dynamically-allocate-2d-array-c/
 
     float v_list[array_size];
-    
+
     // Gram Schmidt
     int size_list_vector = 0; 
     for (int i = 0; i < array_size; i++) {
@@ -57,7 +68,6 @@ int main(int argc, char** argv) {
             if (j == 0){
                 overall_proj = proj_u;
             } else {
-                // memset(overall_proj, 0, array_size);
                 overall_proj = vector_addition(overall_proj, proj_u, array_size);
             }
         }
@@ -67,7 +77,7 @@ int main(int argc, char** argv) {
         size_list_vector += 1;
         free(overall_proj);
     }
-    
+
     // Produces the orthogonolised vectors of the basis vectors and stores them in V_List
     for (int i = 0; i < array_size; i++) {
         float result = dot_product(p_list_of_vectors_v[i], p_list_of_vectors_v[i], array_size);
@@ -78,7 +88,7 @@ int main(int argc, char** argv) {
     float *sv;
     // Produces the shortest non_zero vector
     sv = SE_enumeration(matrix_basis, p_list_of_coeff, v_list);
-    
+
     // Using the output of s, it calculates the euclidean norm vector of s
     float v_min = 0;
     for (int i = 0; i < array_size; i++) {

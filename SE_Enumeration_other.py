@@ -1,11 +1,13 @@
 import math
 
-lattice_basis = [[1.0, 2.0, 3.0], [3.0, 2.0, 1.0], [2.0, 1.0, 3.0]]
+lattice_basis = [[1.0, 1.0, 1.0], [-1.0, 0.0, 2.0], [3.0, 5.0, 6.0]]
+#lattice_basis = [[1.0, -1.0, 3.0], [1.0, 0.0, 5.0], [1.0, 2.0, 6.0]]
 A = 10
 
 list_of_coeff = []
 basis_norms_squared = []
 list_of_vectors_v = []
+v_list = []
 v = None
 u = None
 
@@ -90,6 +92,7 @@ def sum_of_mu(lower, upper):
 
 # Gram-Schmidt bit
 def gram_schmidt(lattice_basis):
+    global v_list
     for i in range(0, len(lattice_basis)):
         if i == 0:
             v = lattice_basis[i]
@@ -121,7 +124,6 @@ def gram_schmidt(lattice_basis):
     print(list_of_vectors_v)
     print(list_of_coeff)
     print(basis_norms_squared)
-    v_list = []
     for i in range(0, len(list_of_vectors_v)):
         result = dot_product(list_of_vectors_v[i], list_of_vectors_v[i])
         v_list.append(result)
@@ -131,23 +133,6 @@ def gram_schmidt(lattice_basis):
 gram_schmidt(lattice_basis)
 
 # LLL
-delta = 0.75
-k = 2
-while k <= len(lattice_basis):
-    for j in range(k-1, 1, -1):
-        x = 0
-        for i in list_of_coeff:
-            if i[0] == [k, j]:
-                x = i[1]
-                break
-        if abs(x) > 0.5:
-            lattice_basis[k-1] = lattice_basis[k-1] - scalar_vector_multiplication(round(x), lattice_basis[j-1])
-            gram_schmidt(lattice_basis)
-
-
-
-
-
 
 
 v = [1.0 if i == 0.0 else 0.0 for i in range(len(lattice_basis))]
@@ -184,4 +169,3 @@ while True:
             else:
                 v[k-1] = v[k-1] + w[k-1]
             w[k-1] = w[k-1] + 1
-
